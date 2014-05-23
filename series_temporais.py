@@ -8,7 +8,6 @@ Created on Thu May 30 14:14:43 2013
 import suds
 import xml.dom.minidom as minidom
 import pandas as pd
-import main_series
 from datetime import datetime
 
 url = 'https://www3.bcb.gov.br/sgspub/JSP/sgsgeral/FachadaWSSGS.wsdl'

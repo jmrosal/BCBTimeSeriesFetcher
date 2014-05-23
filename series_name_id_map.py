@@ -1,20 +1,17 @@
-
-# -*- coding: utf-8 -*-
+kj# -*- coding: utf-8 -*-
 """
 Created on Thu May 30 14:14:43 2013
 
 @author: jmrosal
-#Falta fazer:
-1. Fazer write para salvar no disco rígido.
+
+
 
 """
 import suds
 import json
-from datetime import datetime
 
 url = 'https://www3.bcb.gov.br/sgspub/JSP/sgsgeral/FachadaWSSGS.wsdl'
 client = suds.client.Client(url)
-TODAY = (datetime.today()).strftime('%d/%m/%Y')
 LAST = 12366
 
 
@@ -24,11 +21,22 @@ def get_series(serie_ini, serie_end):
     serie = serie_ini
     meta = {}
 
+    def form_date(dic, post):
+        if post == "Inicio":
+            dia = str(dic["dia"+post])
+            mes = str(dic["mes"+post])
+            ano = str(dic["ano"+post])
+        else:
+            dia = str(dic["ultimoValor"]["dia"])
+            mes = str(dic["ultimoValor"]["mes"])
+            ano = str(dic["ultimoValor"]["ano"])
+        return dia+'/'+mes+'/'+ano
+
     for s in range(serie_ini, serie_end+1):
         try:
             resp = client.service.getUltimoValorVO(serie)
-            date_ini = form_data(resp, "Inicio")
-            data_end = form_data(resp, "Fim")
+            date_ini = form_date(resp, "Inicio")
+            date_end = form_date(resp, "Fim")
             meta[serie] = {}
             meta[serie]['Disponibilidade'] = "T"
             meta[serie]['nome'] = resp['nomeCompleto'].encode('utf-8')
@@ -42,18 +50,6 @@ def get_series(serie_ini, serie_end):
         serie += 1
     return meta
 
-
-def form_date(dic, post):
-    if post == "Inicio":
-        dia = str(dic["dia"+post])
-        mes = str(dic["mes"+post])
-        ano = str(dic["ano"+post])
-    else:
-        dia = str(dic["ultimoValor"]["dia"])
-        mes = str(dic["ultimoValor"]["mes"])
-        ano = str(dic["ultimoValor"]["ano"])
-    return dia+'/'+mes+'/'+ano
-    
 
 def save_meta(serie_ini, serie_end):
     '''save metadata from seires ranging from serie_ini to serie_end
@@ -70,9 +66,9 @@ def return_meta(serie):
     parser = json.load(f)
     f.close()
     return parser[str(serie)]
-    
 
-save_meta(long(1), long(2))
-print json.dumps(return_meta(long(1)), indent=1)
+
+save_meta(long(1), long(4))
+print json.dumps(return_meta(long(4)), indent=1)
 
 
