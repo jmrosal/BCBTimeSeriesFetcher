@@ -1,4 +1,4 @@
-kj# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Thu May 30 14:14:43 2013
 
@@ -17,7 +17,8 @@ LAST = 12366
 
 def get_series(serie_ini, serie_end):
     '''(long)-> dict
-    Inputs the code of the series and series in list format'''
+    Inputs the code number of the series and returns the meta
+    data in a dictionary format'''
     serie = serie_ini
     meta = {}
 
@@ -52,7 +53,7 @@ def get_series(serie_ini, serie_end):
 
 
 def save_meta(serie_ini, serie_end):
-    '''save metadata from seires ranging from serie_ini to serie_end
+    '''save metadata from series ranging from serie_ini to serie_end
     onto the hard disk'''
     resp = get_series(serie_ini, serie_end)
     f = open("meta.json", "w")
@@ -60,15 +61,15 @@ def save_meta(serie_ini, serie_end):
     f.close()
 
 
-def return_meta(serie):
-    '''return metadada from meta file'''
+def fetch_meta(serie):
+    '''fetch metadada from meta file'''
     f = open("meta.json", "r")
     parser = json.load(f)
     f.close()
-    return parser[str(serie)]
-
-
-save_meta(long(1), long(4))
-print json.dumps(return_meta(long(4)), indent=1)
+    try:
+        par = parser[str(serie)]
+        return par
+    except (KeyError):
+        print "serie inexistente"
 
 
